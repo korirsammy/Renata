@@ -9,8 +9,13 @@ namespace Persistence
         public DataContext(DbContextOptions options) : base(options)
         {
         }
+         public DbSet<Color> Colors { get; set; }
+         public DbSet<ProductDetail> ProductDetail { get; set; }
+          public DbSet<Product> Products { get; set; }
         
+       
         public DbSet<Value> Values { get; set; }
+         
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
