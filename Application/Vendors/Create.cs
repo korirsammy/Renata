@@ -2,18 +2,23 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Domain;
-using FluentValidation;
 using MediatR;
 using Persistence;
 
-namespace Application.Products
+namespace Application.Vendors
 {
     public class Create
     {
         public class Command : IRequest
         {
+
             public int Id { get; set; }
-            public string Description { get; set; }
+            public string VendorName { get; set; }
+            public string ContactName { get; set; }
+            public string ContactEmail { get; set; }
+            public string ContactPhone { get; set; }
+            public string ContactAddress { get; set; }
+
         }
         public class Handler : IRequestHandler<Command>
         {
@@ -23,22 +28,19 @@ namespace Application.Products
                 _context = context;
             }
 
-            public class CommandValidator : AbstractValidator<Command>
-            {
-                public CommandValidator()
-                {
-                   
-                    RuleFor(x => x.Description).NotEmpty();                    
-                }
-            }
             public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
             {
-                var product = new Product
+                var vendor = new Vendor
                 {
-                    Description = request.Description
+                    VendorName = request.VendorName,
+                    ContactName = request.ContactName,
+                    ContactEmail = request.ContactEmail,
+                    ContactPhone = request.ContactPhone,
+                    ContactAddress = request.ContactAddress
+
                 };
 
-                _context.Products.Add(product);
+                _context.Vendors.Add(vendor);
 
                 var success = await _context.SaveChangesAsync() > 0;
 
@@ -49,8 +51,5 @@ namespace Application.Products
 
             }
         }
-
-
     }
-
 }

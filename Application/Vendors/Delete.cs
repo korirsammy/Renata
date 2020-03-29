@@ -6,13 +6,13 @@ using Application.Errors;
 using MediatR;
 using Persistence;
 
-namespace Application.Products
+namespace Application.Vendors
 {
     public class Delete
     {
          public class Command : IRequest
                 {
-                   public int Id { get; set; }
+                    public int Id { get; set; }
                 }
                 public class Handler : IRequestHandler<Command>
                 {
@@ -24,13 +24,13 @@ namespace Application.Products
         
                     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
                     {
-                       
-                       var product=await _context.Products.FindAsync(request.Id);
+                      var vendor=await _context.Vendors.FindAsync(request.Id);
 
-                       if(product==null)
-                         throw new RestException(HttpStatusCode.NotFound, new {Product = "Not found"});
+                       if(vendor==null)
+                        throw new RestException(HttpStatusCode.NotFound, new {Vendor = "Not found"});
 
-                       _context.Remove(product);
+                       _context.Remove(vendor);
+
 
                        var success=  await _context.SaveChangesAsync()>0;
         

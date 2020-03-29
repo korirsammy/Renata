@@ -3,16 +3,17 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Errors;
+using Domain;
 using MediatR;
 using Persistence;
 
-namespace Application.Products
+namespace Application.ProductDetails
 {
     public class Delete
     {
          public class Command : IRequest
                 {
-                   public int Id { get; set; }
+                    public int Id { get; set; }
                 }
                 public class Handler : IRequestHandler<Command>
                 {
@@ -25,12 +26,13 @@ namespace Application.Products
                     public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
                     {
                        
-                       var product=await _context.Products.FindAsync(request.Id);
 
-                       if(product==null)
-                         throw new RestException(HttpStatusCode.NotFound, new {Product = "Not found"});
+                      var productDetails =await _context.ProductDetails.FindAsync(request.Id);
 
-                       _context.Remove(product);
+                       if(productDetails==null)
+                         throw new RestException(HttpStatusCode.NotFound, new {ProductDetails = "Not found"});
+
+                       _context.Remove(productDetails);
 
                        var success=  await _context.SaveChangesAsync()>0;
         

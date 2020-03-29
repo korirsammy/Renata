@@ -3,6 +3,8 @@ using Domain;
 using System.Threading.Tasks;
 using System.Threading;
 using Persistence;
+using Application.Errors;
+using System.Net;
 
 namespace Application.Products
 {
@@ -27,6 +29,9 @@ namespace Application.Products
             {
                 var product = await _context.Products.FindAsync(request.Id);
 
+                  if (product == null)
+                    throw new RestException(HttpStatusCode.NotFound, new { Product = "Not found" });
+                    
                 return product;
             }
         }

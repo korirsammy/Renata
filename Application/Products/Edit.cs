@@ -1,6 +1,8 @@
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Errors;
 using MediatR;
 using Persistence;
 
@@ -27,7 +29,7 @@ namespace Application.Products
                        var product= await _context.Products.FindAsync(request.Id);
 
                        if(product==null) 
-                            throw new Exception("Could not find product");
+                            throw new RestException(HttpStatusCode.NotFound, new { Product = "Not found" });
                         
                        product.Description=request.Description?? product.Description;
 

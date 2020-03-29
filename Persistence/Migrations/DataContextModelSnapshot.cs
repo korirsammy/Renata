@@ -53,10 +53,40 @@ namespace Persistence.Migrations
                     b.Property<int?>("ColorId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Description")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Image")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ImeiNumber")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastUpdatedBy")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("LastUpdatedOn")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("ProductId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("SellingPrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VenderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("VenderPrice")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int?>("VendorId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -65,7 +95,9 @@ namespace Persistence.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("ProductDetail");
+                    b.HasIndex("VendorId");
+
+                    b.ToTable("ProductDetails");
                 });
 
             modelBuilder.Entity("Domain.Value", b =>
@@ -99,6 +131,35 @@ namespace Persistence.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Domain.Vendor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ContactAddress")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactEmail")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactName")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("ContactPhone")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("MyProperty")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("VendorName")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vendors");
+                });
+
             modelBuilder.Entity("Domain.ProductDetail", b =>
                 {
                     b.HasOne("Domain.Color", "Color")
@@ -110,6 +171,10 @@ namespace Persistence.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Domain.Vendor", "Vendor")
+                        .WithMany("ProductDetails")
+                        .HasForeignKey("VendorId");
                 });
 #pragma warning restore 612, 618
         }

@@ -56,31 +56,78 @@ namespace Persistence
                 context.Products.AddRange(products);
                 context.SaveChanges();
             }
+            if (!context.Vendors.Any())
+            {
+                var vendors= new List<Vendor>{
+                    new Vendor{                          
+                        VendorName="Mitsumi",
+                        ContactName="Krishna",
+                        ContactEmail="Krishna@gmail.com",
+                        ContactPhone="0722396789",
+                        ContactAddress="Imenti House, 2nd Floor room 301"
+                    },
+                     new Vendor{                                             
+                        VendorName="Hassan imenti",
+                        ContactName="Hassan",
+                        ContactEmail="Hassan@gmail.com",
+                        ContactPhone="0722396789",
+                        ContactAddress="Imenti House, 2nd Floor room 504"
+                    },
+                     new Vendor{                          
+                        VendorName="Ali Imenti",
+                        ContactName="Ali",
+                        ContactEmail="Ali@gmail.com",
+                        ContactPhone="0722396789",
+                        ContactAddress="Imenti House, 3nd Floor room 200"
+                    }                       
+                };
 
-             if (!context.ProductDetail.Any())
+                context.Vendors.AddRange(vendors);
+                context.SaveChanges();
+            }
+
+             if (!context.ProductDetails.Any())
             {
                 var productDetails= new List<ProductDetail>{
-                    new ProductDetail{
-                        Id=1,
+                    new ProductDetail{                        
                         ProductId=1,
+                        ImeiNumber="862213046874810",
+                        SellingPrice=26998.03m,
+                        VenderPrice=8790,
+                        VenderId=1,
                         ColorId=1,
                         Description="Infinix Hot7 purple",
+                        CreatedBy="Auto-Seed",
+                        CreatedOn=DateTime.Now
                        
                     },
                      new ProductDetail{
-                        Id=2,
                         ProductId=2,
+                        ImeiNumber="356874104277320",
+                        SellingPrice=13150.00m,
+                        VenderPrice=9000,
+                        VenderId=2,
                         ColorId=2,
                         Description="Inifinix S4 Grey",
+                        CreatedBy="Auto-Seed",
+                        CreatedOn=DateTime.Now
+                        
                     }  ,
                      new ProductDetail{
-                          Id=3,
-                          ProductId=3,
-                        Description="Y5 Amber Brown ",
+                        ProductId=3,
+                        ImeiNumber="868205048206300",
+                        SellingPrice=12000.00m,
+                        VenderPrice=7000,
+                        VenderId=3,
+                        ColorId=3,
+                        Description="Y5 Amber Brown",
+                        CreatedBy="Auto-Seed",
+                        CreatedOn=DateTime.Now
+                       
                     }                   
                 };
 
-                context.ProductDetail.AddRange(productDetails);
+                context.ProductDetails.AddRange(productDetails);
                 context.SaveChanges();
             }
 
