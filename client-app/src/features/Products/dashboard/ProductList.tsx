@@ -1,25 +1,26 @@
-import React from "react";
+import React, { SyntheticEvent } from "react";
 import {
   Item,
-  Image,
   Button,
   Label,
   Segment,
-  Grid,
-  List
-} from "semantic-ui-react";
+  Grid} from "semantic-ui-react";
 import { IProduct } from "../../../app/model/product";
 
 interface IProps {
   products: IProduct[];
   selectProduct: (id: string) => void;
-  deleteProduct: (id: string) => void;
+  deleteProduct: (event: SyntheticEvent<HTMLButtonElement>, id: string) => void;
+  submitting: boolean;
+  target: string;
 }
 
 export const ProductList: React.FC<IProps> = ({
   products,
   selectProduct,
-  deleteProduct
+  deleteProduct,
+  submitting,
+  target
 }) => {
   return (
     <Grid>
@@ -43,11 +44,14 @@ export const ProductList: React.FC<IProps> = ({
                       color="blue"
                     />
                     <Button
-                      onClick={() => deleteProduct(product.id)}
+                      name={product.id}
+                      loading={target === product.id && submitting}
+                      onClick={(e) => deleteProduct(e, product.id)}
                       floated="right"
                       content="Delete"
                       color="red"
                     />
+
                     <Label basic content={product.description} />
                   </Item.Extra>
                 </Item.Content>

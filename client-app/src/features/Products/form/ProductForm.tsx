@@ -2,19 +2,21 @@ import React, { FormEvent } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IProduct } from "./../../../app/model/product";
 import { useState } from "react";
-import {v4 as uuid} from 'uuid';
+import { v4 as uuid } from "uuid";
 
 interface IProps {
   setEditMode: (editMode: boolean) => void;
   product: IProduct;
   createProduct: (activity: IProduct) => void;
   editProduct: (activity: IProduct) => void;
+  submitting: boolean;
 }
 export const ProductForm: React.FC<IProps> = ({
   setEditMode,
   product: initialFormState,
   editProduct,
-  createProduct
+  createProduct,
+  submitting
 }) => {
   const initializeForm = () => {
     if (initialFormState) {
@@ -39,27 +41,27 @@ export const ProductForm: React.FC<IProps> = ({
   const handleSubmit = () => {
     if (product.id.length === 0) {
       let newProduct = {
-        ...product ,
-        id: uuid()       
+        ...product,
+        id: uuid()
       };
       createProduct(newProduct);
     } else {
       editProduct(product);
     }
   };
-  
+
   const handleInputChange = (
     event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = event.currentTarget;
     setProduct({ ...product, [name]: value });
   };
-  
+
   return (
     <Segment clearing>
       <Form onSubmit={handleSubmit}>
         <Form.TextArea
-         onChange={handleInputChange}
+          onChange={handleInputChange}
           name="description"
           rows={2}
           placeholder="Description"
@@ -72,7 +74,7 @@ export const ProductForm: React.FC<IProps> = ({
           value={product.imeiNumber}
         />
         <Form.Input
-         onChange={handleInputChange}
+          onChange={handleInputChange}
           name="sellingPrice"
           placeholder="sellingPrice"
           value={product.sellingPrice}
@@ -103,7 +105,13 @@ export const ProductForm: React.FC<IProps> = ({
           value={product.createdOn}
         />
 
-        <Button floated="right" positive type="submit" content="Submit" />
+        <Button
+          loading={submitting}
+          floated="right"
+          positive
+          type="submit"
+          content="Submit"
+        />
         <Button
           onClick={() => setEditMode(false)}
           floated="right"

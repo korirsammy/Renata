@@ -51,11 +51,11 @@ namespace Application.ProductDetails
                 productDetails.ImeiNumber=request.ImeiNumber?? productDetails.ImeiNumber;
                 productDetails.SellingPrice=request.SellingPrice;
                 productDetails.VenderPrice=request.VenderPrice;
-                productDetails.ColorId=request.ColorId;
+                productDetails.ColorId=request.ColorId ?? productDetails.ColorId;
                 productDetails.Description=request.Description?? productDetails.Description;
                 productDetails.Image=request.Image?? productDetails.Image;
                 productDetails.LastUpdatedBy=request.LastUpdatedBy?? productDetails.LastUpdatedBy;
-                productDetails.LastUpdatedOn=request.LastUpdatedOn?? productDetails.LastUpdatedOn;
+                productDetails.LastUpdatedOn=DateTime.Now ;//request.LastUpdatedOn?? productDetails.LastUpdatedOn;
                         
 
                 var success = await _context.SaveChangesAsync() > 0;
