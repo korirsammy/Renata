@@ -1,33 +1,24 @@
-import React, { SyntheticEvent } from "react";
+import React, {  useContext } from "react";
 import {
   Item,
   Button,
   Label,
   Segment,
   Grid} from "semantic-ui-react";
-import { IProduct } from "../../../app/model/product";
+import {observer} from 'mobx-react-lite';
+import ProductsStore from "../../../app/stores/productsStore";
 
-interface IProps {
-  products: IProduct[];
-  selectProduct: (id: string) => void;
-  deleteProduct: (event: SyntheticEvent<HTMLButtonElement>, id: string) => void;
-  submitting: boolean;
-  target: string;
-}
+ const ProductList: React.FC = () => {
 
-export const ProductList: React.FC<IProps> = ({
-  products,
-  selectProduct,
-  deleteProduct,
-  submitting,
-  target
-}) => {
+  const productsStore = useContext(ProductsStore);
+  const{productsByDate,selectProduct,deleteProduct,submitting,target}=productsStore;
+
   return (
     <Grid>
       <Grid.Column widht={10}>
         <Segment clearing>
           <Item.Group divided>
-            {products.map(product => (
+            {productsByDate.map(product => (
               <Item key={product.id}>
                 <Item.Content>
                   <Item.Header as="a">{product.description}</Item.Header>
@@ -63,3 +54,5 @@ export const ProductList: React.FC<IProps> = ({
     </Grid>
   );
 };
+
+export default observer(ProductList);

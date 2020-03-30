@@ -1,23 +1,33 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Menu, Container, Button } from "semantic-ui-react";
+import ProductsStore from "../../app/stores/productsStore";
+import { observer } from "mobx-react-lite";
 
-interface IProps{
-  openCreateForm:()=>void;
-}
+const NavBar: React.FC = () => {
+  const productsStore = useContext(ProductsStore);
 
-export const NavBar: React.FC<IProps> = ({openCreateForm}) => {
   return (
     <Menu fixed="top" inverted>
       <Container>
-        <Menu.Item header >
-          <img src="/assets/logo.png" alt="logo" style={{marginRight:'10px'}}/>
+        <Menu.Item header>
+          <img
+            src="/assets/logo.png"
+            alt="logo"
+            style={{ marginRight: "10px" }}
+          />
           Renata
         </Menu.Item>
         <Menu.Item name="Products" />
-        <Menu.Item >
-          <Button onClick={openCreateForm} positive content='Create Product'/>
+        <Menu.Item>
+          <Button
+            onClick={productsStore.openCreateForm}
+            positive
+            content="Create Product"
+          />
         </Menu.Item>
       </Container>
     </Menu>
   );
 };
+
+export default observer(NavBar);

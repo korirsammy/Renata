@@ -1,22 +1,20 @@
-import React, { FormEvent } from "react";
+import React, { FormEvent, useContext } from "react";
 import { Segment, Form, Button } from "semantic-ui-react";
 import { IProduct } from "./../../../app/model/product";
 import { useState } from "react";
 import { v4 as uuid } from "uuid";
+import ProductsStore from "../../../app/stores/productsStore";
+import { observer } from 'mobx-react-lite';
 
 interface IProps {
-  setEditMode: (editMode: boolean) => void;
-  product: IProduct;
-  createProduct: (activity: IProduct) => void;
-  editProduct: (activity: IProduct) => void;
-  submitting: boolean;
+ 
+  product: IProduct;   
+  
 }
-export const ProductForm: React.FC<IProps> = ({
-  setEditMode,
-  product: initialFormState,
-  editProduct,
-  createProduct,
-  submitting
+ const ProductForm: React.FC<IProps> = ({
+ 
+  product: initialFormState, 
+
 }) => {
   const initializeForm = () => {
     if (initialFormState) {
@@ -56,6 +54,9 @@ export const ProductForm: React.FC<IProps> = ({
     const { name, value } = event.currentTarget;
     setProduct({ ...product, [name]: value });
   };
+
+  const productsStore = useContext(ProductsStore);
+  const{createProduct,editProduct,submitting,cancelFormOpen}=productsStore;
 
   return (
     <Segment clearing>
@@ -113,7 +114,7 @@ export const ProductForm: React.FC<IProps> = ({
           content="Submit"
         />
         <Button
-          onClick={() => setEditMode(false)}
+          onClick={cancelFormOpen}
           floated="right"
           type="button"
           content="Cancel"
@@ -122,3 +123,5 @@ export const ProductForm: React.FC<IProps> = ({
     </Segment>
   );
 };
+
+export default observer(ProductForm);

@@ -1,42 +1,40 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
-import { IProduct } from "../../../app/model/product";
+import ProductsStore from "../../../app/stores/productsStore";
+import {observer} from 'mobx-react-lite';
 
-interface IProps {
-  product: IProduct;
-  setEditMode: (editMode: boolean) => void;
-  setSelectedProduct: (product: IProduct | null) => void;
-}
 
-export const ProductDetails: React.FC<IProps> = ({
-  product,
-  setEditMode,
-  setSelectedProduct
-}) => {
+
+
+ const ProductDetails: React.FC = () => {
+
+  const productsStore = useContext(ProductsStore);
+  const{selectedProduct:product,openEditForm,cancelSelectedProduct}=productsStore;
+
   return (
     <Card fluid>
       <Image
-        src={`/assets/categoryImages/${product.id}.jpg`}
+        src={`/assets/categoryImages/${product!.id}.jpg`}
         wrapped
         ui={false}
       />
       <Card.Content>
-        <Card.Header>{product.description}</Card.Header>
+        <Card.Header>{product!.description}</Card.Header>
         <Card.Meta>
-          <span>{product.createdOn}</span>
+          <span>{product!.createdOn}</span>
         </Card.Meta>
-        <Card.Description>{product.imeiNumber}</Card.Description>
+        <Card.Description>{product!.imeiNumber}</Card.Description>
       </Card.Content>
       <Card.Content extra>
         <Button.Group widths={2}>
           <Button
-            onClick={() => setEditMode(true)}
+            onClick={() => openEditForm(product!.id)}
             basic
             color="blue"
             content="Edit"
           />
           <Button
-            onClick={() => setSelectedProduct(null)}
+            onClick={cancelSelectedProduct}
             basic
             color="grey"
             content="Cancel"
@@ -46,3 +44,4 @@ export const ProductDetails: React.FC<IProps> = ({
     </Card>
   );
 };
+export default observer(ProductDetails);
