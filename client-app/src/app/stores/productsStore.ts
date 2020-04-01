@@ -6,15 +6,11 @@ import agent from "../api/agent";
 configure({enforceActions: 'always'});
 
 class ProductsStore {
-  @observable productsRegistry = new Map();
-  @observable products: IProduct[] = [];
-  @observable selectedProduct: IProduct | undefined;
+   @observable productsRegistry = new Map();
+  @observable product: IProduct | null = null;
   @observable loadingInitial = false;
-  @observable editMode = false;
   @observable submitting = false;
   @observable target = '';
-
-
 
   @computed get productsByDate() {
     return Array.from(this.productsRegistry.values()).sort(
@@ -40,14 +36,43 @@ class ProductsStore {
       })
     }
   };
+  @action loadProduct = async (id: string) => {
+    let product = this.getProduct(id);
+    if (product) {
+      this.product = product;
+    } else {
+      this.loadingInitial = true;
+      try {
+        product = await agent.Products.details(id);
+        runInAction('getting products',() => {
+          this.product = product;
+          this.loadingInitial = false;
+        })
+      } catch (error) {
+        runInAction('get product error', () => {
+          this.loadingInitial = false;
+        })
+        console.log(error);
+      }
+    }
+  }
+  @action clearProduct = () => {
+    this.product = null;
+  }
+  getProduct = (id: string) => {
+    return this.productsRegistry.get(id);
+  }
+
+
 
   @action createProduct = async (product: IProduct) => {
     this.submitting = true;
     try {
       await agent.Products.create(product);
-      runInAction('create product', () => {
+      runInAction('create activity', () => {
+        console.log(product);
+        console.log(product.id);
         this.productsRegistry.set(product.id, product);
-        this.editMode = false;
         this.submitting = false;
       })
     } catch (error) {
@@ -58,7 +83,6 @@ class ProductsStore {
     }
   };
 
-  
 
   @action editProduct = async (product: IProduct) => {
     this.submitting = true;
@@ -66,24 +90,24 @@ class ProductsStore {
       await agent.Products.update(product);
       runInAction('editing product', () => {
         this.productsRegistry.set(product.id, product);
-        this.selectedProduct = product;
-        this.editMode = false;
+        this.product = product;
         this.submitting = false;
       })
-
     } catch (error) {
-      runInAction('edit product error', () => {
+      runInAction('edit activity error', () => {
         this.submitting = false;
       })
       console.log(error);
     }
   };
+
+
   @action deleteProduct = async (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
     this.submitting = true;
     this.target = event.currentTarget.name;
     try {
       await agent.Products.delete(id);
-      runInAction('deleting product', () => {
+      runInAction('deleting activity', () => {
         this.productsRegistry.delete(id);
         this.submitting = false;
         this.target = '';
@@ -96,25 +120,5 @@ class ProductsStore {
       console.log(error);
     }
   }
-  @action openCreateForm = () => {
-    this.editMode = true;
-    this.selectedProduct = undefined;
-  };
-
-  @action openEditForm = (id: string) => {
-    this.selectedProduct = this.productsRegistry.get(id);
-    this.editMode = true;
-  }
-  @action cancelSelectedProduct = () => {
-    this.selectedProduct = undefined;
-  }
-
-  @action cancelFormOpen = () => {
-    this.editMode = false;
-  }
-  @action selectProduct = (id: string) => {    
-      this.selectedProduct = this.productsRegistry.get(id);
-    this.editMode = false;
-  };
 }
 export default createContext(new ProductsStore());

@@ -1,17 +1,12 @@
-import React, {  useContext } from "react";
-import {
-  Item,
-  Button,
-  Label,
-  Segment,
-  Grid} from "semantic-ui-react";
-import {observer} from 'mobx-react-lite';
+import React, { useContext } from "react";
+import { Item, Button, Label, Segment, Grid } from "semantic-ui-react";
+import { observer } from "mobx-react-lite";
 import ProductsStore from "../../../app/stores/productsStore";
+import { Link } from "react-router-dom";
 
- const ProductList: React.FC = () => {
-
+const ProductList: React.FC = () => {
   const productsStore = useContext(ProductsStore);
-  const{productsByDate,selectProduct,deleteProduct,submitting,target}=productsStore;
+  const { productsByDate, deleteProduct, submitting, target } = productsStore;
 
   return (
     <Grid>
@@ -29,15 +24,16 @@ import ProductsStore from "../../../app/stores/productsStore";
                   </Item.Description>
                   <Item.Extra>
                     <Button
-                      onClick={() => selectProduct(product.id)}
+                      as={Link}
+                      to={`/products/${product.id}`}
                       floated="right"
                       content="View"
                       color="blue"
                     />
                     <Button
-                      name={product.id}
-                      loading={target === product.id && submitting}
-                      onClick={(e) => deleteProduct(e, product.id)}
+                      name={product.id}                     
+                      loading={target === product.id && submitting}                     
+                      onClick={e => deleteProduct(e, product.id)}
                       floated="right"
                       content="Delete"
                       color="red"

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Container, Segment, Header, Button, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { observer } from 'mobx-react-lite';
 
 const HomePage = () => {
   return (
@@ -17,11 +18,10 @@ const HomePage = () => {
         </Header>
         <Header as='h2' inverted content='Welcome to Renata' />
         <Button as={Link} to='/products' size='huge' inverted>
-          Take me to the products!
+          Take me to  products page!
         </Button>
       </Container>
     </Segment>
   );
 };
-
-export default HomePage;
+export default observer(HomePage);

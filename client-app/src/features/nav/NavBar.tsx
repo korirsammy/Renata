@@ -1,15 +1,16 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Menu, Container, Button } from "semantic-ui-react";
-import ProductsStore from "../../app/stores/productsStore";
+
 import { observer } from "mobx-react-lite";
+import { NavLink } from 'react-router-dom';
 
 const NavBar: React.FC = () => {
-  const productsStore = useContext(ProductsStore);
+ 
 
   return (
     <Menu fixed="top" inverted>
       <Container>
-        <Menu.Item header>
+        <Menu.Item header as={NavLink} exact to='/'>
           <img
             src="/assets/logo.png"
             alt="logo"
@@ -17,10 +18,10 @@ const NavBar: React.FC = () => {
           />
           Renata
         </Menu.Item>
-        <Menu.Item name="Products" />
+        <Menu.Item name="Products" as={NavLink} to='/products'/>
         <Menu.Item>
           <Button
-            onClick={productsStore.openCreateForm}
+            as={NavLink} to='/createProduct'
             positive
             content="Create Product"
           />
