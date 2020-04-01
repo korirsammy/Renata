@@ -13,9 +13,18 @@ class ProductsStore {
   @observable target = '';
 
   @computed get productsByDate() {
-    return Array.from(this.productsRegistry.values()).sort(
-      (a, b) => Date.parse(a.date) - Date.parse(b.date)
-    );
+    return this.groupProductsByDate(Array.from(this.productsRegistry.values()))
+  }
+
+  groupProductsByDate(product: IProduct[]) {
+    const sortedProducts = product.sort(
+      (a, b) => Date.parse(a.createdOn) - Date.parse(b.createdOn)
+    )
+    return Object.entries(sortedProducts.reduce((products, product) => {
+      const createdOn = product.createdOn.split('T')[0];
+      products[createdOn] = products[createdOn] ? [...products[createdOn], product] : [product];
+      return products;
+    }, {} as {[key: string]: IProduct[]}));
   }
 
   @action loadProducts = async () => {
@@ -29,7 +38,7 @@ class ProductsStore {
         });
         this.loadingInitial = false;
       })
-
+    //  console.log(this.groupProductsByDate(products));
     } catch (error) {
       runInAction('load products error', () => {
         this.loadingInitial = false;

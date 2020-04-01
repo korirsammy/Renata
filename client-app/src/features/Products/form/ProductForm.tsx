@@ -1,5 +1,5 @@
 import React, {useState, FormEvent, useContext, useEffect } from "react";
-import { Segment, Form, Button } from "semantic-ui-react";
+import { Segment, Form, Button, Grid } from "semantic-ui-react";
 import { IProduct } from "./../../../app/model/product";
 
 import { v4 as uuid } from "uuid";
@@ -78,7 +78,9 @@ const ProductForm: React.FC<RouteComponentProps<DetailParams>> = ({
   };
 
   return (
-    <Segment clearing>
+    <Grid>
+      <Grid.Column width={10}>
+      <Segment clearing>
       <Form onSubmit={handleSubmit}>
         <Form.TextArea
           onChange={handleInputChange}
@@ -140,6 +142,9 @@ const ProductForm: React.FC<RouteComponentProps<DetailParams>> = ({
         />
       </Form>
     </Segment>
+      </Grid.Column>
+    </Grid>
+   
   );
 };
 
