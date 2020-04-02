@@ -2,11 +2,14 @@ import { observable, action, computed, runInAction, configure } from "mobx";
 import { createContext, SyntheticEvent } from "react";
 import { IProduct } from "../model/product";
 import agent from "../api/agent";
+import { history } from '../..';
+import { toast } from 'react-toastify';
+
 
 configure({enforceActions: 'always'});
 
 class ProductsStore {
-   @observable productsRegistry = new Map();
+  @observable productsRegistry = new Map(); 
   @observable product: IProduct | null = null;
   @observable loadingInitial = false;
   @observable submitting = false;
@@ -18,10 +21,11 @@ class ProductsStore {
 
   groupProductsByDate(product: IProduct[]) {
     const sortedProducts = product.sort(
-      (a, b) => Date.parse(a.createdOn) - Date.parse(b.createdOn)
+     
+      (a, b) => a.createdOn.getTime() - b.createdOn.getTime()
     )
     return Object.entries(sortedProducts.reduce((products, product) => {
-      const createdOn = product.createdOn.split('T')[0];
+      const createdOn = product.createdOn.toISOString().split('T')[0];
       products[createdOn] = products[createdOn] ? [...products[createdOn], product] : [product];
       return products;
     }, {} as {[key: string]: IProduct[]}));
@@ -33,30 +37,37 @@ class ProductsStore {
       const products = await agent.Products.list();
       runInAction('loading products', () => {
         products.forEach(product => {
-          product.createdOn = product.createdOn.split('.')[0];
+          product.createdOn = new Date(product.createdOn);
           this.productsRegistry.set(product.id, product);
         });
         this.loadingInitial = false;
       })
-    //  console.log(this.groupProductsByDate(products));
+   
     } catch (error) {
       runInAction('load products error', () => {
         this.loadingInitial = false;
       })
     }
   };
+ 
   @action loadProduct = async (id: string) => {
     let product = this.getProduct(id);
     if (product) {
       this.product = product;
+      return product;
     } else {
       this.loadingInitial = true;
       try {
         product = await agent.Products.details(id);
-        runInAction('getting products',() => {
+        runInAction('getting product',() => {          
+          product.createdOn = new Date(product.createdOn);
           this.product = product;
+          this.productsRegistry.set(product.id, product);
           this.loadingInitial = false;
         })
+       
+        return product;
+       
       } catch (error) {
         runInAction('get product error', () => {
           this.loadingInitial = false;
@@ -65,6 +76,8 @@ class ProductsStore {
       }
     }
   }
+
+
   @action clearProduct = () => {
     this.product = null;
   }
@@ -73,25 +86,25 @@ class ProductsStore {
   }
 
 
-
   @action createProduct = async (product: IProduct) => {
     this.submitting = true;
     try {
       await agent.Products.create(product);
-      runInAction('create activity', () => {
-        console.log(product);
-        console.log(product.id);
+      runInAction('create product', () => {
         this.productsRegistry.set(product.id, product);
         this.submitting = false;
       })
+      history.push(`/products/${product.id}`)
     } catch (error) {
       runInAction('create product error', () => {
         this.submitting = false;
       })
-      console.log(error);
+      toast.error('Problem submitting data');
+      console.log(error.response);
     }
   };
 
+ 
 
   @action editProduct = async (product: IProduct) => {
     this.submitting = true;
@@ -102,13 +115,16 @@ class ProductsStore {
         this.product = product;
         this.submitting = false;
       })
+      history.push(`/products/${product.id}`)
     } catch (error) {
-      runInAction('edit activity error', () => {
+      runInAction('edit product error', () => {
         this.submitting = false;
       })
+      toast.error('Problem submitting data');
       console.log(error);
     }
   };
+
 
 
   @action deleteProduct = async (event: SyntheticEvent<HTMLButtonElement>, id: string) => {
@@ -129,5 +145,10 @@ class ProductsStore {
       console.log(error);
     }
   }
+
+ 
+
+
+
 }
 export default createContext(new ProductsStore());

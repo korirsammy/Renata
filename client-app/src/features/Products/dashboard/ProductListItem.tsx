@@ -1,8 +1,8 @@
 import React from "react";
 import { Item, Button,  Segment, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-
 import { IProduct } from "../../../app/model/product";
+import {format} from 'date-fns';
 
 export const ProductListItem: React.FC<{ product: IProduct }> = ({
   product
@@ -24,7 +24,8 @@ export const ProductListItem: React.FC<{ product: IProduct }> = ({
         </Item.Group>
       </Segment>
       <Segment>
-        <Icon name='clock' /> {product.createdOn}
+        <Icon name='marker' /> {product.venderId}
+        <Icon name='clock' /> {format(product.createdOn,'eeee do MMMM')}
         <Icon name='marker' /> {product.imeiNumber}, {product.venderId}
       </Segment>
       <Segment secondary>Attendees will go here</Segment>

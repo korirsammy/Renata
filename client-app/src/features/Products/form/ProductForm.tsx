@@ -1,11 +1,35 @@
-import React, {useState, FormEvent, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
-import { IProduct } from "./../../../app/model/product";
-
-import { v4 as uuid } from "uuid";
+import { ProductFormValues } from "./../../../app/model/product";
 import ProductsStore from "../../../app/stores/productsStore";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router";
+import { Form as FinalForm, Field } from "react-final-form";
+import TextInput from "./../../../app/common/form/TextInput";
+import TextAreaInput from "./../../../app/common/form/TextAreaInput";
+import SelectInput from "./../../../app/common/form/SelectInput";
+import { vendors } from "./../../../app/common/options/vendorOptions";
+import DateInput from "./../../../app/common/form/DateInput";
+import { combineDateAndTime } from "../../../app/common/util/util";
+import { v4 as uuid } from "uuid";
+import {
+  combineValidators,
+  isRequired,
+  composeValidators,
+  hasLengthGreaterThan
+} from 'revalidate';
+
+const validate = combineValidators({
+   description: composeValidators(
+    isRequired('Description'),
+    hasLengthGreaterThan(4)({
+      message: 'Description needs to be at least 5 characters'
+    })
+  )(),
+  imeiNumber: isRequired({ message: 'IMEI Number is required' }),
+  venderId: isRequired('Vender')
+ 
+});
 
 interface DetailParams {
   id: string;
@@ -17,134 +41,129 @@ const ProductForm: React.FC<RouteComponentProps<DetailParams>> = ({
 }) => {
   const productsStore = useContext(ProductsStore);
 
-  const {
-    createProduct,
-    editProduct,
-    submitting,   
-    product: initialFormState,
-    loadProduct,
-    clearProduct
-  } = productsStore;
+  const { createProduct, editProduct, submitting, loadProduct } = productsStore;
 
-  const [product, setProduct] = useState<IProduct>({
-    id: "",
-    productId: "",
-    imeiNumber: "",
-    sellingPrice: "",
-    venderPrice: "",
-    venderId: "",
-    colorId: "",
-    description: "",
-    image: "",
-    createdOn: ""
-  });
+  const [product, setProduct] = useState(new ProductFormValues());
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (match.params.id && product.id.length === 0) {
-      loadProduct(match.params.id).then(
-        () => initialFormState && setProduct(initialFormState)
-      );
+    if (match.params.id) {
+      setLoading(true);
+      loadProduct(match.params.id)
+        .then(product => {
+          setProduct(new ProductFormValues(product));
+        })
+        .finally(() => setLoading(false));
     }
-    return () => {
-      clearProduct();
-    }
-  }, [
-    loadProduct,
-    clearProduct,
-    match.params.id,    
-    initialFormState,
-    product.id.length
-  ]);
+  }, [loadProduct, match.params.id]);
 
-  const handleSubmit = () => {
-    if (product.id.length === 0) {
+  const handleFinalFormSubmit = (values: any) => {
+    const dateAndTime = combineDateAndTime(values.createdOn, values.time);
+    const { date, time, ...product } = values;
+    product.createdOn = dateAndTime;
+    if (!product.id) {
       let newProduct = {
         ...product,
         id: uuid()
       };
-      createProduct(newProduct).then(() =>
-        history.push(`/products/${newProduct.id}`)
-      );
+      createProduct(newProduct);
     } else {
-      editProduct(product).then(() => history.push(`/products/${product.id}`));
+      editProduct(product);
     }
-  };
-
-  const handleInputChange = (
-    event: FormEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = event.currentTarget;
-    setProduct({ ...product, [name]: value });
   };
 
   return (
     <Grid>
       <Grid.Column width={10}>
-      <Segment clearing>
-      <Form onSubmit={handleSubmit}>
-        <Form.TextArea
-          onChange={handleInputChange}
-          name="description"
-          rows={2}
-          placeholder="Description"
-          value={product.description}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="imeiNumber"
-          placeholder="imeiNumber"
-          value={product.imeiNumber}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="sellingPrice"
-          placeholder="sellingPrice"
-          value={product.sellingPrice}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="venderPrice"
-          placeholder="venderPrice"
-          value={product.venderPrice}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="venderId"
-          placeholder="venderId"
-          value={product.venderId}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="colorId"
-          placeholder="colorId"
-          value={product.colorId}
-        />
-        <Form.Input
-          onChange={handleInputChange}
-          name="createdOn"
-          type="datetime-local"
-          placeholder="createdOn"
-          value={product.createdOn}
-        />
+        <Segment clearing>
+          <FinalForm
+           validate={validate}
+            initialValues={product}
+            onSubmit={handleFinalFormSubmit}
+            render={({ handleSubmit,invalid, pristine }) => (
+              <Form onSubmit={handleSubmit} loading={loading}>
+                <Field
+                  name="description"
+                  placeholder="Description"
+                  value={product.description}
+                  rows={2}
+                  component={TextAreaInput}
+                />
+                <Field
+                  name="imeiNumber"
+                  placeholder="imeiNumber"
+                  value={product.imeiNumber}
+                  component={TextInput}
+                />
+                <Field
+                  name="sellingPrice"
+                  placeholder="sellingPrice"
+                  value={product.sellingPrice}
+                  component={TextInput}
+                />
+                <Field
+                  name="venderPrice"
+                  placeholder="venderPrice"
+                  value={product.venderPrice}
+                  component={TextInput}
+                />
+                <Field
+                  component={SelectInput}
+                  options={vendors}
+                  name="venderId"
+                  placeholder="venderId"
+                  value={product.venderId}
+                />
 
-        <Button
-          loading={submitting}
-          floated="right"
-          positive
-          type="submit"
-          content="Submit"
-        />
-        <Button
-         onClick={() => history.push('/products')}
-          floated="right"
-          type="button"
-          content="Cancel"
-        />
-      </Form>
-    </Segment>
+                <Field
+                  name="colorId"
+                  placeholder="colorId"
+                  value={product.colorId}
+                  component={TextInput}
+                />
+                <Form.Group widths="equal">
+                  <Field
+                    name="createdOn"
+                    date={true}
+                    placeholder="Date"
+                    value={product.createdOn}
+                    component={DateInput}
+                  />
+                  <Field
+                    name="time"
+                    time={true}
+                    placeholder="Time"
+                    value={product.time}
+                    component={DateInput}
+                  />
+                </Form.Group>
+
+                <Button
+                
+                  disabled={loading || invalid || pristine}
+                  loading={submitting}
+                  floated="right"
+                  positive
+                  type="submit"
+                  content="Submit"
+                />
+                <Button
+                  disabled={loading}
+                  onClick={
+                    product.id
+                      ? () => history.push(`/products/${product.id}`)
+                      : () => history.push("/products")
+                  }
+                  floated="right"
+                  type="button"
+                  content="Cancel"
+                />
+              </Form>
+            )}
+          />
+        </Segment>
       </Grid.Column>
     </Grid>
-   
   );
 };
 

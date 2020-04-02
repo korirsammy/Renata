@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import ProductsStore from "../../../app/stores/productsStore";
 import { ProductListItem } from "./ProductListItem";
 
+
 const ProductList: React.FC = () => {
 
   const productsStore = useContext(ProductsStore);

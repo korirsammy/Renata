@@ -40,7 +40,7 @@ const ProductDetails: React.FC<RouteComponentProps<DetailParams>> = ({
       <Card.Content>
         <Card.Header>{product!.description}</Card.Header>
         <Card.Meta>
-          <span>{product!.createdOn}</span>
+
         </Card.Meta>
         <Card.Description>{product!.imeiNumber}</Card.Description>
       </Card.Content>
