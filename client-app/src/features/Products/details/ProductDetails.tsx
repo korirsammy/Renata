@@ -23,10 +23,12 @@ const ProductDetails: React.FC<RouteComponentProps<DetailParams>> = ({
 
   useEffect(() => {
     loadProduct(match.params.id);
-  }, [loadProduct,match.params.id]);
+  }, [loadProduct,match.params.id,history]);
 
   if (loadingInitial || !product)
     return <LoadingComponent content="loading product..." />;
+
+    if (!product) return <h2>Product not found</h2>;
 
   return (
     <Card fluid>
