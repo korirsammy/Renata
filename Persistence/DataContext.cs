@@ -1,10 +1,11 @@
 ﻿using System;
 using Domain;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
-    public class DataContext : DbContext
+    public class DataContext : IdentityDbContext<AppUser>
     {
         
          public DbSet<Color> Colors { get; set; }
@@ -25,6 +26,8 @@ namespace Persistence
            // builder.Entity<ProductDetail>().HasKey( pd => 
            // new {pd.Id, pd.ImeiNumber}
           //  );
+          
+            base.OnModelCreating(builder);
 
             builder.Entity<Value>()
                 .HasData(

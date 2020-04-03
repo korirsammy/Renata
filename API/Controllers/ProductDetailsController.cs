@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Application.ProductDetails;
 using Domain;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -22,6 +23,7 @@ namespace API.Controllers
             return await _mediator.Send(new List.Query());
         }
         [HttpGet("{id}")]
+        [Authorize]
        public async Task<ActionResult<ProductDetail>> Details(int id){
             return await _mediator.Send(new Details.Query{Id = id});
         }
