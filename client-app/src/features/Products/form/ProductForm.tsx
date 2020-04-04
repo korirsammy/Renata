@@ -1,7 +1,6 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Segment, Form, Button, Grid } from "semantic-ui-react";
-import { ProductFormValues } from "./../../../app/model/product";
-import ProductsStore from "../../../app/stores/productsStore";
+import { ProductFormValues } from "../../../app/models/product";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router";
 import { Form as FinalForm, Field } from "react-final-form";
@@ -18,6 +17,7 @@ import {
   composeValidators,
   hasLengthGreaterThan
 } from 'revalidate';
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 const validate = combineValidators({
    description: composeValidators(
@@ -39,7 +39,10 @@ const ProductForm: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
   history
 }) => {
-  const productsStore = useContext(ProductsStore);
+  const rootStore = useContext(RootStoreContext);
+  
+
+  const productsStore = rootStore.productStore;
 
   const { createProduct, editProduct, submitting, loadProduct } = productsStore;
 

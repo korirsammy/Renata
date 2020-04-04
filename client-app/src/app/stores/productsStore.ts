@@ -1,14 +1,20 @@
-import { observable, action, computed, runInAction, configure } from "mobx";
-import { createContext, SyntheticEvent } from "react";
-import { IProduct } from "../model/product";
+import { observable, action, computed, runInAction } from "mobx";
+import {  SyntheticEvent } from "react";
+import { IProduct } from "../models/product";
 import agent from "../api/agent";
 import { history } from '../..';
 import { toast } from 'react-toastify';
+import { RootStore } from "./rootStore";
 
 
-configure({enforceActions: 'always'});
 
-class ProductsStore {
+
+export default class ProductsStore {
+  rootStore: RootStore;
+  constructor(rootStore: RootStore) {
+    this.rootStore = rootStore;
+  }
+  
   @observable productsRegistry = new Map(); 
   @observable product: IProduct | null = null;
   @observable loadingInitial = false;
@@ -151,4 +157,4 @@ class ProductsStore {
 
 
 }
-export default createContext(new ProductsStore());
+

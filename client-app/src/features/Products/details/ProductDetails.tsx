@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from "react";
 import { Card, Image, Button } from "semantic-ui-react";
-import ProductsStore from "../../../app/stores/productsStore";
 import { observer } from "mobx-react-lite";
 import { RouteComponentProps } from "react-router";
 import  LoadingComponent  from "../../../app/layout/LoadingComponent";
 import { Link } from 'react-router-dom';
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 interface DetailParams {
   id: string;
@@ -14,7 +14,10 @@ const ProductDetails: React.FC<RouteComponentProps<DetailParams>> = ({
   match,
   history
 }) => {
-  const productsStore = useContext(ProductsStore);
+  
+  const rootStore = useContext(RootStoreContext);
+  const productsStore= rootStore.productStore;
+ 
   const {
     product,   
     loadProduct,

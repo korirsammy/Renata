@@ -1,7 +1,7 @@
 import React from "react";
 import { Item, Button,  Segment, Icon } from "semantic-ui-react";
 import { Link } from "react-router-dom";
-import { IProduct } from "../../../app/model/product";
+import { IProduct } from "../../../app/models/product";
 import {format} from 'date-fns';
 
 export const ProductListItem: React.FC<{ product: IProduct }> = ({

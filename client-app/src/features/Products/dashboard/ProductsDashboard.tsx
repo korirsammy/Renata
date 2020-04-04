@@ -2,19 +2,21 @@ import React, {  useContext,useEffect  } from "react";
 import { Grid } from "semantic-ui-react";
 import ProductList  from "./ProductList";
 import {observer} from 'mobx-react-lite';
-import ProductsStore from "../../../app/stores/productsStore";
 import LoadingComponent from '../../../app/layout/LoadingComponent';
+import { RootStoreContext } from "../../../app/stores/rootStore";
 
 
  const ProductsDashboard: React.FC = () => {
 
-  const productsStore = useContext(ProductsStore);
+  const rootStore = useContext(RootStoreContext);
+  const {loadProducts,loadingInitial}= rootStore.productStore;
+
   useEffect(() => {
-    productsStore.loadProducts();
-  }, [productsStore]);
+    loadProducts();
+  }, [loadProducts]);
 
   
-  if (productsStore.loadingInitial)
+  if (loadingInitial)
     return <LoadingComponent content='Loading products' />;
 
   return (

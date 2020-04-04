@@ -1,21 +1,23 @@
 import React, { useContext, Fragment } from "react";
 import { Item,  Label } from "semantic-ui-react";
 import { observer } from "mobx-react-lite";
-import ProductsStore from "../../../app/stores/productsStore";
 import { ProductListItem } from "./ProductListItem";
+import { RootStoreContext } from "../../../app/stores/rootStore";
+import {format} from 'date-fns';
 
 
 const ProductList: React.FC = () => {
 
-  const productsStore = useContext(ProductsStore);
-  const { productsByDate } = productsStore;
+  const rootStore = useContext(RootStoreContext);  
+  const { productsByDate } = rootStore.productStore;
 
   return (
     <Fragment>
       {productsByDate.map(([group, products]) => (
         <Fragment key={group}>
           <Label size='large' color='blue'>
-            {group}
+          
+            {format(group, 'eeee do MMMM')}
           </Label>
           <Item.Group divided>
             {products.map(product => (
