@@ -21,6 +21,9 @@ export default class ProductsStore {
   @observable submitting = false;
   @observable target = '';
 
+  @observable phones: IProduct[]=[];
+
+
   @computed get productsByDate() {
     return this.groupProductsByDate(Array.from(this.productsRegistry.values()))
   }
@@ -32,6 +35,7 @@ export default class ProductsStore {
     )
     return Object.entries(sortedProducts.reduce((products, product) => {
       const createdOn = product.createdOn.toISOString().split('T')[0];
+    
       products[createdOn] = products[createdOn] ? [...products[createdOn], product] : [product];
       return products;
     }, {} as {[key: string]: IProduct[]}));
@@ -44,6 +48,7 @@ export default class ProductsStore {
       runInAction('loading products', () => {
         products.forEach(product => {
           product.createdOn = new Date(product.createdOn);
+          this.phones.push(product);
           this.productsRegistry.set(product.id, product);
         });
         this.loadingInitial = false;
@@ -142,6 +147,7 @@ export default class ProductsStore {
         this.productsRegistry.delete(id);
         this.submitting = false;
         this.target = '';
+        
       })
     } catch (error) {
       runInAction('delete product error', () => {

@@ -14,6 +14,7 @@ const NavBar: React.FC = () => {
           <img src='/assets/logo.png' alt='logo' style={{ marginRight: 10 }} />
           Renata
         </Menu.Item>
+        <Menu.Item name='Phones' as={NavLink} to='/phones' />
         <Menu.Item name='Products' as={NavLink} to='/products' />
         <Menu.Item>
           <Button

@@ -14,14 +14,19 @@
     "@types/revalidate": "^1.1.2",
     "@types/uuid": "^7.0.2",
     "axios": "^0.19.2",
+    "bootstrap": "^4.1.1",
     "date-fns": "^2.0.0-alpha.13",
     "eslint-plugin-flowtype": "^3.13.0",
     "final-form": "^4.19.1",
+    "font-awesome": "^4.7.0",
+    "lodash": "^4.17.10",
     "mobx": "^5.15.4",
     "mobx-react-lite": "^1.5.2",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
     "react-final-form": "^6.3.0",
+    "react-intl-number-format": "^1.1.1",
+    "react-number-format": "^4.4.1",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.4.0",
     "react-toastify": "^5.5.0",
@@ -53,5 +58,7 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@types/lodash": "^4.14.149"
+  }
 }

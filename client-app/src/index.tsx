@@ -10,6 +10,9 @@ import * as serviceWorker from "./serviceWorker";
 import ScrollToTop from "./app/layout/ScrollToTop";
 import dateFnsLocalizer from 'react-widgets-date-fns';
 
+//import 'bootstrap/dist/css/bootstrap.css';
+//import 'font-awesome/css/font-awesome.css';
+
 dateFnsLocalizer();
 
 export const history = createBrowserHistory();

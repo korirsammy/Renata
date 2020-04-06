@@ -13,6 +13,10 @@ import LoginForm from "../../features/user/LoginForm";
 import { RootStoreContext } from "../stores/rootStore";
 import LoadingComponent from "./LoadingComponent";
 import ModalContainer from "../common/modals/ModalContainer";
+import PhonesDashboard from "../../features/Phones/PhonesDashboard";
+import PhonesTable from "../../features/Phones/phonesTable";
+
+
 
 
 const App: React.FC<RouteComponentProps> = ({ location }) => {
@@ -43,6 +47,7 @@ const App: React.FC<RouteComponentProps> = ({ location }) => {
             <NavBar />
             <Container style={{ marginTop: '7em' }}>
               <Switch>
+              <Route exact path='/phones' component={PhonesDashboard} />
                 <Route exact path='/products' component={ProductsDashboard} />
                 <Route path='/products/:id' component={ProductDetails} />
                 <Route
